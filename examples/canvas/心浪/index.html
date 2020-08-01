@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>心浪❤️</title>
+  </head>
+  <body style="background-color: blueviolet;">
+    <canvas id="heart" width="300" height="300"></canvas>
+    <script src="./wave.js"></script>
+    <script>
+      const canvas = document.getElementById("heart");
+      const ctx = canvas.getContext("2d");
+      // 画心外形
+      const drawHeart = (ctx, x = 150, y = 130, a = 9) => {
+        // 所有心上小点的集合
+        const vectors = [];
+        for (let i = 0; i < 50; i++) {
+          // 设置心上的两点之间的弧度
+          const step = (i / 50) * (Math.PI * 2);
+          const vector = {
+            x: a * (16 * Math.pow(Math.sin(step), 3)),
+            y:
+              a *
+              (13 * Math.cos(step) -
+                5 * Math.cos(2 * step) -
+                2 * Math.cos(3 * step) -
+                Math.cos(4 * step)),
+          };
+          vectors.push(vector);
+        }
+        ctx.save();
+        ctx.beginPath();
+        ctx.translate(x, y);
+        ctx.rotate(Math.PI);
+        for (let i = 0; i < 50; i++) {
+          const vector = vectors[i];
+          ctx.lineTo(vector.x, vector.y);
+        }
+        ctx.strokeStyle = "rgba(186, 165, 130, 0.6)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+        ctx.clip();
+      };
+      drawHeart(ctx);
+      // 声明两个波浪
+      this.wave1 = new Wave({
+        canvasWidth: 300, // 轴长
+        canvasHeight: 300, // 轴高
+        waveWidth: 0.055, // 波浪的宽度数越小越宽
+        waveHeight: 4,
+        speed: 0.06,
+        xOffset: 0,
+        colors: ["rgba(255,13,23,0.48)", "rgba(120,130,140,0.48)"],
+      });
+      this.wave2 = new Wave({
+        canvasWidth: 300, // 轴长
+        canvasHeight: 300, // 轴高
+        waveWidth: 0.04, // 波浪的宽度数越小越宽
+        waveHeight: 3,
+        speed: 0.02,
+        xOffset: 2,
+        colors: ["#ffad11", "#a34213"],
+      });
+      let nowRange = 0;
+      let rangeRange = 60;
+      // 画
+      const draw = () => {
+        ctx.clearRect(0, 0, 300, 300);
+        if (nowRange <= rangeRange) {
+          nowRange++;
+        }
+        // 把波浪画到心里
+        this.wave1.update({ nowRange });
+        this.wave1.draw(ctx);
+        this.wave2.update({ nowRange });
+        this.wave2.draw(ctx);
+        window.requestAnimationFrame(draw);
+      };
+      draw();
+    </script>
+  </body>
+</html>
