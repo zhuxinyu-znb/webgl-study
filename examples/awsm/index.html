@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // https://wasdk.github.io/WasmFiddle/
+        // 到这个地址去把c文件编译成awsm文件
+        function loadWebAssembly(path, imports = {}){
+            return fetch(path)
+            .then(response => response.arrayBuffer())
+            .then(buffer => WebAssembly.compile(buffer))
+            .then(module => {
+                // 创建一个WebAssembly实例
+                return new WebAssembly.Instance(module, imports);
+            })
+        }
+        loadWebAssembly('./math.wasm').then(instance => {
+            const add = instance.exports.add;
+            const square = instance.exports.square;
+            console.log(add(1, 2));
+            console.log(square(2));
+        })
+    </script>
+</body>
+</html>
