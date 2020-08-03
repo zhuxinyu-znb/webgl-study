@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>时钟⏰</title>
+  </head>
+  <body>
+    <canvas id="clock" width="600" height="600"></canvas>
+  </body>
+  <script>
+    /** @type {HTMLCanvasElement} */
+
+    const canvas = document.getElementById("clock");
+    const ctx = canvas.getContext("2d");
+    const width = ctx.canvas.width;
+    const height = ctx.canvas.height;
+    const r = width / 2;
+    
+    // 画外框
+    const drawBackground = () => {
+      ctx.save();
+      ctx.translate(r, r);
+      ctx.beginPath();
+      ctx.arc(0, 0, r - 5, 0, 2 * Math.PI);
+      ctx.lineWidth = 10;
+      ctx.stroke();
+
+      // 画数字
+      const numberArray = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2];
+      ctx.font = "50px Arial";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      numberArray.forEach((number, i) => {
+        const rad = ((2 * Math.PI) / 12) * i;
+        const x = Math.cos(rad) * (r - 50);
+        const y = Math.sin(rad) * (r - 50);
+        ctx.fillText(number, x, y);
+      });
+
+      // 画点点
+      for (let i = 0; i < 60; i++) {
+        const rad = ((2 * Math.PI) / 60) * i;
+        const x = Math.cos(rad) * (r - 20);
+        const y = Math.sin(rad) * (r - 20);
+        ctx.beginPath();
+        if (i % 5 === 0) {
+          ctx.fillStyle = "#000";
+        } else {
+          ctx.fillStyle = "#ccc";
+        }
+        ctx.arc(x, y, 5, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+    };
+    // 画时针
+    const drawHour = (hour, minute) => {
+      const rad = ((2 * Math.PI) / 12) * hour;
+      const mrad = ((2 * Math.PI) / 12 / 60) * minute;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rotate(rad + mrad);
+      ctx.lineWidth = "10";
+      ctx.lineCap = "round";
+      ctx.moveTo(0, 15);
+      ctx.lineTo(0, -r / 2);
+      ctx.stroke();
+      ctx.restore();
+    };
+    // 画分针
+    const drawMinute = (minute, second) => {
+      const rad = ((2 * Math.PI) / 60) * minute;
+      const srad = ((2 * Math.PI) / 60 / 60) * second;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rotate(rad + srad);
+      ctx.lineWidth = "6";
+      ctx.lineCap = "round";
+      ctx.moveTo(0, 15);
+      ctx.lineTo(0, -r + 50);
+      ctx.stroke();
+      ctx.restore();
+    };
+    // 画秒针
+    const drawSecond = (second) => {
+      const rad = ((2 * Math.PI) / 60) * second;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rotate(rad);
+      ctx.fillStyle = "#f00";
+      ctx.moveTo(-2, 30);
+      ctx.lineTo(2, 30);
+      ctx.lineTo(1, -r + 18);
+      ctx.lineTo(-1, -r + 18);
+      ctx.fill();
+      ctx.restore();
+    };
+    // 画中心点
+    const drawDot = () => {
+      ctx.save();
+      ctx.beginPath();
+      ctx.fillStyle = "#fff";
+      ctx.arc(0, 0, 5, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.restore();
+    };
+    // 动起来
+    const draw = () => {
+      ctx.clearRect(0, 0, width, height);
+      const now = new Date();
+      const hour = now.getHours();
+      const minute = now.getMinutes();
+      const second = now.getSeconds();
+      drawBackground();
+      drawHour(hour, minute);
+      drawMinute(minute, second);
+      drawSecond(second);
+      drawDot();
+      ctx.restore();
+    };
+    draw();
+    setInterval(draw, 1000);
+  </script>
+</html>
