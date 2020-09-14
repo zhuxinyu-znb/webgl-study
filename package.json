@@ -1,0 +1,11 @@
+{
+  "name": "webgl-study",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/zhuxinyu-znb/webgl-study.git",
+  "author": "zhuxinyu <zhuxinyu05@meituan.com>",
+  "license": "MIT",
+  "dependencies": {
+    "lerna": "^3.22.1"
+  }
+}
