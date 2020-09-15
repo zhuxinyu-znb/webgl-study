@@ -14,9 +14,9 @@ camera.lookAt(scene.position);
 
 // 3. 设置绘制对象
 const renderer = new THREE.WebGLRenderer();
-
 renderer.setClearColor(new THREE.Color(0xeeeeee));
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMapEnabled = true;
 
 // 4. 设置辅助测试工具
 const axes = new THREE.AxesHelper(20);
@@ -30,32 +30,39 @@ plane.rotation.x = -0.5 * Math.PI;
 plane.position.x = 15;
 plane.position.y = 0;
 plane.position.z = 0;
+plane.receiveShadow = true;
 scene.add(plane);
 
 // 6. 设置立方体
 const cubeGeometry = new THREE.CubeGeometry(4, 4, 4);
-const cubeMaterial = new THREE.MeshBasicMaterial({
+const cubeMaterial = new THREE.MeshLambertMaterial({
   color: 0xff0000,
-  wireframe: true,
 });
 const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 cube.position.x = -4;
 cube.position.y = 3;
 cube.position.z = 0;
+cube.castShadow = true;
 scene.add(cube);
 
 // 7. 设置球体
 const sphereGeometry = new THREE.SphereGeometry(4, 20, 20);
-const sphereMaterial = new THREE.MeshBasicMaterial({
+const sphereMaterial = new THREE.MeshLambertMaterial({
   color: 0x7777ff,
-  wireframe: true,
 });
 const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 sphere.position.x = 20;
 sphere.position.y = 4;
 sphere.position.z = -2;
+sphere.castShadow = true;
 scene.add(sphere);
 
-// 8. 将renderer的输出挂载到body上
+// 8. 设置点光源
+const spotLight = new THREE.SpotLight(0xffffff);
+spotLight.position.set(-40, 60, -10);
+spotLight.castShadow = true;
+scene.add(spotLight);
+
+// 9. 将renderer的输出挂载到body上
 document.body.appendChild(renderer.domElement);
 renderer.render(scene, camera);
